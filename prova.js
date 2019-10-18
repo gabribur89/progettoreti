@@ -6,7 +6,15 @@ var urlencodedParser = bodyParser.urlencoded({ extended: true });
 
 var amqp = require('amqplib/callback_api');
 
-amqp.connect('amqp://localhost', function(error0, connection) {
+// Running Server Details.
+var server = app.listen(8082, function () {
+  var host = server.address().address
+  var port = server.address().port
+  console.log("Example app listening at %s:%s Port", host, port)
+});
+
+function mettiinCoda(messaggio){
+	amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {
         throw error0;
     }
@@ -16,28 +24,20 @@ amqp.connect('amqp://localhost', function(error0, connection) {
         }
 
         var queue = 'hello';
-        var msg = res.send(reply);
-
+		
         channel.assertQueue(queue, {
             durable: false
         });
-        channel.sendToQueue(queue, Buffer.from(msg));
+        channel.sendToQueue(queue, Buffer.from(messaggio));
 
-        console.log(" [x] Sent %s", msg);
+        console.log(" [x] Sent %s", messaggio);
     });
     setTimeout(function() {
         connection.close();
         process.exit(0);
     }, 500);
 });
-
-// Running Server Details.
-var server = app.listen(8082, function () {
-  var host = server.address().address
-  var port = server.address().port
-  console.log("Example app listening at %s:%s Port", host, port)
-});
-
+}
  
 app.get('/form', function (req, res) {
   var html='';
@@ -55,10 +55,12 @@ app.get('/form', function (req, res) {
 });
  
 app.post('/thank', urlencodedParser, function (req, res){
-  var reply='';
+  /*var reply='';
   reply += "Your name is" + req.body.name;
   reply += "Your E-mail id is" + req.body.email; 
   reply += "Your address is" + req.body.address;
   reply += "Your mobile number is" + req.body.mobilno;
-  res.send(reply);
+  res.send(reply);*/
+  mettiinCoda('saddsdssd');
  });
+ 
