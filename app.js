@@ -38,7 +38,23 @@ function mettiinCoda(messaggio){
     }, 500);
 });
 }
- 
+
+// funzione asincrona che è in ascolto sulla coda di ricezione
+async function listenForResults() {
+  // connect to Rabbit MQ
+  let connection = await amqp.connect('amqp://localhost');
+
+  var reply_queue = 'reply';
+
+  // create a channel and prefetch 1 message at a time
+  let channel = await connection.createChannel('amqp://localhost');
+  await channel.prefetch(1);
+
+  // start consuming messages
+  await consume({ connection, channel });
+}
+
+
 app.get('/form', function (req, res) {
   var html='';
   html +="<body>";
