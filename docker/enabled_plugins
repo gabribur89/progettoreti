@@ -1,1 +1,1 @@
-[pgsql_listen_exchange].
+[rabbitmq_management,pgsql_listen_exchange].
