@@ -27,3 +27,11 @@ docker run --rm --hostname rabbittest -p 5672:5672 --mount type=bind,source=/c/U
 
 pathassoluto: C:\Users\boss\Desktop\LaboratorioRetiMateriale\codice\docker\rabbitmq.config
 POSIX:		  /c/Users/boss/Desktop/LaboratorioRetiMateriale/codice/docker/rabbitmq.config
+
+CONTAINER manage è funzionante!!!!
+
+docker start manage - container su dove eseguo
+
+apro config di rabbit su pagina http://192.168.99.100:8080/ credenziali: user: guest - password: guest
+
+da psql shell: eseguo NOTIFY su canale example -----> NOTIFY example, 'messaggio';
