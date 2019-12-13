@@ -6,15 +6,13 @@ docker build -t rabbitgabri:nomeversione . (posso specificare ad esempio più ve
 
 CREO CONTAINER somerabbit usando l'img appena creata (rabbitgabri) -- se non specifico --name, docker ne assegna uno
 
-docker run -d --hostname rabbittest --name some-rabbit -p 5672:5672 rabbitgabri
+docker run -d --hostname rabbittest --name some-rabbit -p 5672:5672 -p 8080:15672 rabbitgabri
 
-
-
+# questo comando abilita esplicitamente il plugin di rabbit, nel nostro caso non ci serve perché abbiamo configurato rabbitmq nell'immagine docker per abilitare i plugin alla creazione del container 
 docker exec some-rabbit rabbitmq-plugins enable pgsql_listen_exchange
 
 #entro dentro bash di docker di vm
 docker exec -ti some-rabbit bash 
-
 
 #test connessione db postgres
 docker run --mount type=bind,source=/tuopathassoluto/test_postgres.py,target=/test.py immaginecreata python test.py
@@ -22,16 +20,12 @@ docker run --mount type=bind,source=/tuopathassoluto/test_postgres.py,target=/te
 #vedo se il plugin e' installato
 docker exec -ti some-rabbit rabbitmq-plugins list 
 
-
 docker run --rm --hostname rabbittest -p 5672:5672 --mount type=bind,source=/c/Users/boss/Desktop/LaboratorioRetiMateriale/codice/docker/rabbitmq.config,target=/etc/rabbitmq/rabbitmq.config rabbitgabri
 
-pathassoluto: C:\Users\boss\Desktop\LaboratorioRetiMateriale\codice\docker\rabbitmq.config
-POSIX:		  /c/Users/boss/Desktop/LaboratorioRetiMateriale/codice/docker/rabbitmq.config
 
 CONTAINER manage è funzionante!!!!
 
 docker start manage - container su dove eseguo
 
 apro config di rabbit su pagina http://192.168.99.100:8080/ credenziali: user: guest - password: guest
-
 da psql shell: eseguo NOTIFY su canale example -----> NOTIFY example, 'messaggio';
