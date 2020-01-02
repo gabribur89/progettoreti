@@ -12,7 +12,8 @@ amqp.connect('amqp://192.168.99.100', function(error0, connection) {
         }
 
         var queue = 'hello';
-        var msg = 'Hello World!';
+        //var msg = 'Hello World!'; invece del messaggio creo un elemento JSON
+		var msg = '{ "nome": "Pippo", "cognome": "Pluto"}';
 
         channel.assertQueue(queue, {
             durable: false

@@ -20,7 +20,9 @@ amqp.connect('amqp://192.168.99.100', function(error0, connection) {
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
 
         channel.consume(queue, function(msg) {
-            console.log(" [x] Received %s", msg.content.toString());
+			var abbonato = JSON.parse(msg.content.toString());
+            //console.log(" [x] Received %s", msg.content.toString());
+			console.log(abbonato.nome);
         }, {
             noAck: true
         });

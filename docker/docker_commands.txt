@@ -29,3 +29,13 @@ docker start manage - container su dove eseguo
 
 apro config di rabbit su pagina http://192.168.99.100:8080/ credenziali: user: guest - password: guest
 da psql shell: eseguo NOTIFY su canale example -----> NOTIFY example, 'messaggio';
+
+
+INSERT INTO utente(nome) VALUES ('aaa');
+
+DELETE FROM table_name
+WHERE [condition];
+
+UPDATE table_name
+SET column1 = value1, column2 = value2...., columnN = valueN
+WHERE [condition];
