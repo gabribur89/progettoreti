@@ -9,13 +9,13 @@ port: 5432,
 })
 
 client.connect()
-/*
-//Test SELECT
+
+/*//Test SELECT
 client.query('SELECT * FROM utente', (err,res) =>{
 	console.log(err,res)
 	client.end()
 })
-/*const res = await client.query('SELECT $1::text as message', ['Hello world!'])
+const res = await client.query('SELECT $1::text as message', ['Hello world!'])
 console.log(res.rows[0].message) // Hello world!
 await client.end()
 */
@@ -23,13 +23,14 @@ await client.end()
 
 // callback - Test Inserimento
 const sql = 'INSERT INTO utente(nome, cognome, id) VALUES($1,$2,$3) RETURNING *'
-const values = ['brian','white','24']
+const values = ['fff','ggg','25']
 client.query(sql, values, (err, res) => {
   if (err) {
     console.log(err.stack)
   } else {
     console.log(res.rows[0])
+	client.end()
  }
 })
 
-client.end()
+//client.end()
