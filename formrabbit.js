@@ -78,5 +78,11 @@ app.post('/thank', urlencodedParser, function (req, res){
   reply += "Your mobile number is" + req.body.mobilno;
   res.send(reply);*/
   mettiinCoda('saddsdssd');
+  res.send("ok");
  });
+
+app.get('/statorichieste', function (req, res) {
+  listenForResults();
+  res.send(html);
+});
  
