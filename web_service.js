@@ -90,6 +90,7 @@ function consume({ connection, channel, resultsChannel }) {
       let msgBody = msg.content.toString();
       let data = JSON.parse(msgBody);
       let requestId = data.requestId;
+	  console.log(data);
       let processingResults = data.processingResults;
       console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
 

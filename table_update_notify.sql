@@ -7,7 +7,7 @@ BEGIN
   ELSE
     id = OLD.id;
   END IF;
-  PERFORM pg_notify('example', json_build_object('table', TG_TABLE_NAME, 'id', id, 'type', TG_OP)::text);
+  PERFORM pg_notify('results', json_build_object('table', TG_TABLE_NAME, 'id', id, 'type', TG_OP)::text);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
