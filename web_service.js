@@ -8,6 +8,8 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const amqp = require('amqplib');
 
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Middleware
 app.use(bodyParser.json());
 
@@ -44,7 +46,8 @@ app.post('/api/v1/processData', async function (req, res) {
   let channel = await connection.createConfirmChannel();
 
   // publish the data to Rabbit MQ
-  let requestData = req.body.data;
+  let requestData = req.body;
+  //console.log(requestData);
   console.log("Published a request message, requestId:", requestId);
   await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { requestId, requestData } });
 

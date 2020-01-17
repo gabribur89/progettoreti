@@ -1,3 +1,16 @@
+//configuro postgres
+const { Client, Pool} = require('pg')
+
+const client = new Client({
+user: 'postgres',
+host: 'localhost',
+database: 'test',
+password: 'admin',
+port: 5432,
+})
+
+client.connect()
+
 const amqp = require('amqplib');
 
 // RabbitMQ connection string
@@ -31,6 +44,20 @@ function publishToChannel(channel, { routingKey, exchangeName, data }) {
   });
 }
 
+
+function inserisci_db(data){
+	const sql = 'INSERT INTO utente(nome, cognome) VALUES($1,$2) RETURNING *'
+	const values = [data.name,data.email]
+		client.query(sql, values, (err, res) => {
+		  if (err) {
+			console.log(err.stack)
+		  } else {
+			console.log(res.rows[0])
+			client.end()
+		 }
+		})
+}
+
 // consume messages from RabbitMQ
 function consume({ connection, channel, resultsChannel }) {
   return new Promise((resolve, reject) => {
@@ -40,6 +67,10 @@ function consume({ connection, channel, resultsChannel }) {
       let data = JSON.parse(msgBody);
       let requestId = data.requestId;
       let requestData = data.requestData;
+	  
+	  //faccio query db per inserimento
+	  inserisci_db(requestData);
+	  //console.log(requestData);
       console.log("Received a request message, requestId:", requestId);
 
       // process data
