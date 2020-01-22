@@ -24,12 +24,28 @@ app.get('/form', function (req, res) {
   var html='';
   html +="<body>";
   html += "<form action='/api/v1/processData'  method='post' name='form1'>";
-  html += "Name:</p><input type= 'text' name='name'>";
-  html += "Email:</p><input type='text' name='email'>";
-  html += "address:</p><input type='text' name='address'>";
-  html += "Mobile number:</p><input type='text' name='mobilno'>";
-  html += "<input type='submit' value='submit'>";
-  html += "<INPUT type='reset'  value='reset'>";
+  html += "Nome:<input type= 'text' name='nome'></p>";
+  html += "Cognome:<input type='text' name='cognome'></p>";
+  html += "CF:<input type='text' name='cf'></p>";
+  html += "Telefono:<input type='text' name='telefono'></p>";
+  html += "Data di Nascita:<input type='date' name='datanascita'></p>";
+  html += "Indirizzo:<input type='text' name='indirizzo'></p>";
+  html += "Citta':<input type='text' name='citta'></p>";
+  html += "CAP:<input type='text' name='cap'></p>";
+  html += "Tipologia scelta:<select>";
+  html += "<option value='pesi'>Sala Pesi</option>"
+  html += "<option value='cyclette'>Sala Cyclette</option>"
+  html += "<option value='tapis'>Sala Tapis Roulant</option>"
+  html += "<option value='nuoto'>Sala Nuoto</option>"
+  html += "</select></p>";
+  html += "Durata abbonamento:<select>";
+  html += "<option value='1mese'>1 mese</option>"
+  html += "<option value='3mesi'>3 mesi</option>"
+  html += "<option value='6mesi'>6 mesi</option>"
+  html += "<option value='12mesi'>1 anno</option>"
+  html += "</select></p>";
+  html += "<input type='submit' value='Invia!'>";
+  html += "<input type='reset'  value='Reset'>";
   html += "</form>";
   html += "</body>";
   res.send(html);
