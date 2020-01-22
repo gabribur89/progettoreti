@@ -46,8 +46,8 @@ function publishToChannel(channel, { routingKey, exchangeName, data }) {
 
 
 function inserisci_db(data){
-	const sql = 'INSERT INTO utente(nome, cognome, cf, telefono, datanascita, indirizzo, citta, cap) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *'
-	const values = [data.nome,data.cognome,data.cf,data.telefono,data.datanascita,data.indirizzo,data.citta,data.cap]
+	const sql = 'INSERT INTO utente(nome, cognome, cf, telefono, datanascita, indirizzo, citta, cap, tipo, durata) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *'
+	const values = [data.nome,data.cognome,data.cf,data.telefono,data.datanascita,data.indirizzo,data.citta,data.cap,data.tipo,data.abbonamento]
 		client.query(sql, values, (err, res) => {
 		  if (err) {
 			console.log(err.stack)

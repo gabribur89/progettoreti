@@ -32,17 +32,17 @@ app.get('/form', function (req, res) {
   html += "Indirizzo:<input type='text' name='indirizzo'></p>";
   html += "Citta':<input type='text' name='citta'></p>";
   html += "CAP:<input type='text' name='cap'></p>";
-  html += "Tipologia scelta:<select>";
-  html += "<option value='pesi'>Sala Pesi</option>"
-  html += "<option value='cyclette'>Sala Cyclette</option>"
-  html += "<option value='tapis'>Sala Tapis Roulant</option>"
-  html += "<option value='nuoto'>Sala Nuoto</option>"
+  html += "Tipologia scelta:<select name='tipo'>";
+  html += "<option name='pesi' value='pesi'>Sala Pesi</option>"
+  html += "<option name='cyclette' value='cyclette'>Sala Cyclette</option>"
+  html += "<option name='tapis' value='tapis'>Sala Tapis Roulant</option>"
+  html += "<option name='nuoto' value='nuoto'>Sala Nuoto</option>"
   html += "</select></p>";
-  html += "Durata abbonamento:<select>";
-  html += "<option value='1mese'>1 mese</option>"
-  html += "<option value='3mesi'>3 mesi</option>"
-  html += "<option value='6mesi'>6 mesi</option>"
-  html += "<option value='12mesi'>1 anno</option>"
+  html += "Durata abbonamento:<select name='abbonamento'>";
+  html += "<option name='1mese' value='1mese'>1 mese</option>"
+  html += "<option name='3mesi' value='3mesi'>3 mesi</option>"
+  html += "<option name='6mesi' value='6mesi'>6 mesi</option>"
+  html += "<option name='12mesi' value='12mesi'>1 anno</option>"
   html += "</select></p>";
   html += "<input type='submit' value='Invia!'>";
   html += "<input type='reset'  value='Reset'>";
@@ -63,7 +63,7 @@ app.post('/api/v1/processData', async function (req, res) {
 
   // publish the data to Rabbit MQ
   let requestData = req.body;
-  //console.log(requestData);
+  console.log(requestData);
   console.log("Published a request message, requestId:", requestId);
   await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { requestId, requestData } });
 
