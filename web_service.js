@@ -51,6 +51,22 @@ app.get('/form', function (req, res) {
   res.send(html);
 });
 
+//recupero info abbonati
+app.get('/getabbonato', async function (req, res) {
+  var html = '';
+  html += "<body>";
+  html += "<h1>Dati degli abbonati</h1>";
+  html += "</body>";
+  
+  // connect to Rabbit MQ and create a channel
+  let connection = await amqp.connect(messageQueueConnectionString);
+  let channel = await connection.createConfirmChannel();
+  
+  await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op: "SELECT" } });
+  
+  res.send(html);
+});
+
 // handle the request
 app.post('/api/v1/processData', async function (req, res) {
   // save request id and increment
@@ -63,7 +79,7 @@ app.post('/api/v1/processData', async function (req, res) {
 
   // publish the data to Rabbit MQ
   let requestData = req.body;
-  console.log(requestData);
+  //console.log(requestData);
   console.log("Published a request message, requestId:", requestId);
   await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { requestId, requestData } });
 

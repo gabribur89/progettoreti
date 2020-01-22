@@ -65,6 +65,9 @@ function consume({ connection, channel, resultsChannel }) {
       // parse message
       let msgBody = msg.content.toString();
       let data = JSON.parse(msgBody);
+	  console.log(data);
+	  //se c'è un campo op, non eseguo inserisci_db, altrimenti eseguo un'altra funzione (es. select di tutti i dati)
+	  
       let requestId = data.requestId;
       let requestData = data.requestData;
 	  
