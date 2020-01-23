@@ -58,6 +58,19 @@ function inserisci_db(data){
 		})
 }
 
+function seleziona_dati(data){
+	const sql = 'SELECT * FROM utente WHERE id=$1';
+	const values = ['23'];
+	client.query(sql, values, (err, res) => {
+	  if (err) {
+		console.log(err.stack)
+	  } else {
+		console.log(res.rows)
+		client.end()
+	 }
+	})
+}
+
 // consume messages from RabbitMQ
 function consume({ connection, channel, resultsChannel }) {
   return new Promise((resolve, reject) => {
@@ -66,29 +79,42 @@ function consume({ connection, channel, resultsChannel }) {
       let msgBody = msg.content.toString();
       let data = JSON.parse(msgBody);
 	  console.log(data);
+	  
 	  //se c'è un campo op, non eseguo inserisci_db, altrimenti eseguo un'altra funzione (es. select di tutti i dati)
-	  
-      let requestId = data.requestId;
-      let requestData = data.requestData;
-	  
-	  //faccio query db per inserimento
-	  inserisci_db(requestData);
-	  //console.log(requestData);
-      console.log("Received a request message, requestId:", requestId);
+	  if(data.hasOwnProperty('op'))
+	  {
+		  if(data.op == "SELECT")
+		  {
+			console.log("ciaone");
+		    await channel.ack(msg);
+			//query db per selezione
+			seleziona_dati(data);
+		  }
+		  if(data.op == "INSERT")
+		  {
+			  let requestId = data.requestId;
+			  let requestData = data.requestData;
+			  
+			  //faccio query db per inserimento
+			  inserisci_db(requestData);
+			  //console.log(requestData);
+			  console.log("Received a request message, requestId:", requestId);
 
-      // process data
-      let processingResults = await processMessage(requestData);
+			  // process data
+			  let processingResults = await processMessage(requestData);
 
-      // publish results to channel
-      await publishToChannel(resultsChannel, {
-        exchangeName: "processing",
-        routingKey: "result",
-        data: { requestId, processingResults }
-      });
-      console.log("Published results for requestId:", requestId);
+			  // publish results to channel
+			  await publishToChannel(resultsChannel, {
+				exchangeName: "processing",
+				routingKey: "result",
+				data: { requestId, processingResults }
+			  });
+			  console.log("Published results for requestId:", requestId);
 
-      // acknowledge message as processed successfully
-      await channel.ack(msg);
+			  // acknowledge message as processed successfully
+			  await channel.ack(msg);
+		  }
+	  }
     });
 
     // handle connection closed

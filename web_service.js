@@ -1,4 +1,3 @@
-
 //const path  = require('path');
 //require('dotenv').config({path:  path.resolve(process.cwd(), '../.env')});
 
@@ -62,7 +61,8 @@ app.get('/getabbonato', async function (req, res) {
   let connection = await amqp.connect(messageQueueConnectionString);
   let channel = await connection.createConfirmChannel();
   
-  await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op: "SELECT" } });
+  let op = "SELECT";
+  await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op } });
   
   res.send(html);
 });
@@ -76,12 +76,12 @@ app.post('/api/v1/processData', async function (req, res) {
   // connect to Rabbit MQ and create a channel
   let connection = await amqp.connect(messageQueueConnectionString);
   let channel = await connection.createConfirmChannel();
-
+  
   // publish the data to Rabbit MQ
   let requestData = req.body;
   //console.log(requestData);
   console.log("Published a request message, requestId:", requestId);
-  await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { requestId, requestData } });
+  await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op: "INSERT", requestId, requestData } });
 
   // send the request id in the response
   res.send({ requestId })
