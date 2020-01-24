@@ -1,0 +1,1 @@
+rabbitmqctl list_bindings destination_name routing_key arguments
