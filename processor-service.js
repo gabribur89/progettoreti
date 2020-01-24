@@ -5,7 +5,7 @@ const client = new Client({
 user: 'postgres',
 host: 'localhost',
 database: 'test',
-password: 'postgres',
+password: 'admin',
 port: 5432,
 })
 
@@ -14,7 +14,7 @@ client.connect()
 const amqp = require('amqplib');
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://';
+const messageQueueConnectionString = 'amqp://192.168.99.100';
 
 async function listenForMessages() {
   // connect to Rabbit MQ
@@ -61,7 +61,7 @@ function inserisci_db(data){
 
 function seleziona_dati(data){
 	const sql = 'SELECT * FROM utente WHERE id=$1';
-	const values = ['23'];
+	const values = [data.id];
 	client.query(sql, values, (err, res) => {
 	  if (err) {
 		console.log(err.stack)
@@ -78,7 +78,7 @@ function consume({ connection, channel, resultsChannel }) {
       // parse message
       let msgBody = msg.content.toString();
       let data = JSON.parse(msgBody);
-	  console.log(data);
+	  //console.log(data);
 	  
 	  //se c'è un campo op, non eseguo inserisci_db, altrimenti eseguo un'altra funzione (es. select di tutti i dati)
 	  if(data.hasOwnProperty('op'))
@@ -87,6 +87,7 @@ function consume({ connection, channel, resultsChannel }) {
 		  {
 			console.log("ciaone");
 		    await channel.ack(msg);
+			//console.log(data);
 			//query db per selezione
 			seleziona_dati(data);
 		  }

@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 let lastRequestId = 1;
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://';
+const messageQueueConnectionString = 'amqp://192.168.99.100';
 
 //form
 app.get('/form', function (req, res) {
@@ -120,15 +120,39 @@ function consume({ connection, channel, resultsChannel }) {
     channel.consume("processing.results", async function (msg) {
       // parse message
       let msgBody = msg.content.toString();
-      console.log(msgBody)
-      //let data = JSON.parse(msgBody);
-	    //console.log(data);
-      //let requestId = data.requestId;
-      //let processingResults = data.processingResults;
-      //console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
+	  //{ table: 'utente', id: 28, type: 'INSERT' }
+      let data = JSON.parse(msgBody);
+	  if(data.hasOwnProperty('type'))
+	  {
+		  if(data.type == "INSERT")
+		  {
+			console.log("Inserimento utente avvenuto");
+			let op = "SELECT";
+			let id = data.id;
+			await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op, id }});
+			
+		  }
+		  if(data.type == "UPDATE")
+		  {
+			console.log("aggiornamento avvenuto con successo");
+		  }
+		  if(data.type == "DELETE")
+		  {
+			console.log("cancellamento avvenuto con successo");
+		  }
 
-      // acknowledge message as received
-      await channel.ack(msg);
+	  }
+	  else
+	  {
+		  let requestId = data.requestId;
+		  console.log(data);
+		  let processingResults = data.processingResults;
+		  console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
+
+		  // acknowledge message as received
+		  await channel.ack(msg);
+	  }
+	  
     });
 
     // handle connection closed
