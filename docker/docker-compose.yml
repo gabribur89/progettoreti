@@ -3,6 +3,8 @@ version: '3'
 volumes:
   db_vol2:
     driver: "local"
+  queue_vol:
+    driver: "local"
 
 services:
   db:
@@ -19,6 +21,10 @@ services:
     image: gabrirabbit-manage
     #volumes: 
     #  - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
+    environment: 
+       - RABBITMQ_NODENAME=rabbit@queue
+    volumes: 
+       - queue_vol:/var/lib/rabbitmq
     ports:
       - "5672:5672"
       - "8080:15672"
