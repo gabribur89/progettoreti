@@ -1,1 +1,0 @@
-INSERT INTO utente(nome,cognome,id) VALUES('aaa','rrrr',26);
