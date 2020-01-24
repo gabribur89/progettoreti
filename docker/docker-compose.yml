@@ -21,7 +21,8 @@ services:
     image: gabrirabbit-manage
     #volumes: 
     #  - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
-    environment: 
+    environment:
+       # hostname statico per non perdere la configurazione alla creazione 
        - RABBITMQ_NODENAME=rabbit@queue
     volumes: 
        - queue_vol:/var/lib/rabbitmq
