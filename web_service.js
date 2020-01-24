@@ -120,14 +120,39 @@ function consume({ connection, channel, resultsChannel }) {
     channel.consume("processing.results", async function (msg) {
       // parse message
       let msgBody = msg.content.toString();
+	  //{ table: 'utente', id: 28, type: 'INSERT' }
       let data = JSON.parse(msgBody);
-      let requestId = data.requestId;
-	  console.log(data);
-      let processingResults = data.processingResults;
-      console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
+	  if(data.hasOwnProperty('type'))
+	  {
+		  if(data.type == "INSERT")
+		  {
+			console.log("Inserimento utente avvenuto");
+			let op = "SELECT";
+			let id = data.id;
+			await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op, id }});
+			
+		  }
+		  if(data.type == "UPDATE")
+		  {
+			console.log("aggiornamento avvenuto con successo");
+		  }
+		  if(data.type == "DELETE")
+		  {
+			console.log("cancellamento avvenuto con successo");
+		  }
 
-      // acknowledge message as received
-      await channel.ack(msg);
+	  }
+	  else
+	  {
+		  let requestId = data.requestId;
+		  console.log(data);
+		  let processingResults = data.processingResults;
+		  console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
+
+		  // acknowledge message as received
+		  await channel.ack(msg);
+	  }
+	  
     });
 
     // handle connection closed
