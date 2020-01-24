@@ -1,0 +1,24 @@
+entrare nell'utente postgres da docker:
+
+docker exec -ti docker_db_1 psql -U postgres
+
+# listare i database:
+
+postgres=# \l
+                                 List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges   
+-----------+----------+----------+------------+------------+-----------------------
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ test      | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+
+# connettersi ad uno specifico db :
+
+postgres=#\c test
+test=#
+
+# vedere le tabelle nel db:
+test=# SELECT * FROM utente;
