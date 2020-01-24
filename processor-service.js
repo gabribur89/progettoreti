@@ -5,7 +5,7 @@ const client = new Client({
 user: 'postgres',
 host: 'localhost',
 database: 'test',
-password: 'admin',
+password: 'postgres',
 port: 5432,
 })
 
@@ -14,7 +14,7 @@ client.connect()
 const amqp = require('amqplib');
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://192.168.99.100';
+const messageQueueConnectionString = 'amqp://';
 
 async function listenForMessages() {
   // connect to Rabbit MQ
@@ -46,15 +46,16 @@ function publishToChannel(channel, { routingKey, exchangeName, data }) {
 
 
 function inserisci_db(data){
+	console.log(data)
 	const sql = 'INSERT INTO utente(nome, cognome, cf, telefono, datanascita, indirizzo, citta, cap, tipo, durata) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *'
 	const values = [data.nome,data.cognome,data.cf,data.telefono,data.datanascita,data.indirizzo,data.citta,data.cap,data.tipo,data.abbonamento]
 		client.query(sql, values, (err, res) => {
 		  if (err) {
+			console.log("MIO ERRORE")
 			console.log(err.stack)
 		  } else {
 			console.log(res.rows[0])
-			client.end()
-		 }
+   		 }
 		})
 }
 
@@ -66,7 +67,6 @@ function seleziona_dati(data){
 		console.log(err.stack)
 	  } else {
 		console.log(res.rows)
-		client.end()
 	 }
 	})
 }
@@ -139,3 +139,4 @@ function processMessage(requestData) {
 }
 
 listenForMessages();
+//client.end()

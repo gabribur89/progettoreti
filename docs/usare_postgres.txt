@@ -22,3 +22,6 @@ test=#
 
 # vedere le tabelle nel db:
 test=# SELECT * FROM utente;
+
+# invia una notifica
+NOTIFY results, '{"table": "utente", "id": 28, "type": "INSERT" }';

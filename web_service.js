@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 let lastRequestId = 1;
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://192.168.99.100';
+const messageQueueConnectionString = 'amqp://';
 
 //form
 app.get('/form', function (req, res) {
@@ -120,11 +120,12 @@ function consume({ connection, channel, resultsChannel }) {
     channel.consume("processing.results", async function (msg) {
       // parse message
       let msgBody = msg.content.toString();
-      let data = JSON.parse(msgBody);
-      let requestId = data.requestId;
-	  console.log(data);
-      let processingResults = data.processingResults;
-      console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
+      console.log(msgBody)
+      //let data = JSON.parse(msgBody);
+	    //console.log(data);
+      //let requestId = data.requestId;
+      //let processingResults = data.processingResults;
+      //console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
 
       // acknowledge message as received
       await channel.ack(msg);
