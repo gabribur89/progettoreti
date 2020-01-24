@@ -1,0 +1,11 @@
+# per importare nel Database lo schema ed i dati eseguire da utente postgres:
+
+CREATE DATABASE miodb; 
+
+psql -d miodb < pg_function.sql
+psql -d miodb < tabella_utente.sql
+
+# opzionale se si vuole fare l'update dei trigger:
+psql -d miodb < triggers_update.sql 
+
+ 
