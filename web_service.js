@@ -12,6 +12,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Middleware
 app.use(bodyParser.json());
 
+//bootstrap
+app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
+
 // simulate request ids
 let lastRequestId = 1;
 
@@ -21,6 +24,9 @@ const messageQueueConnectionString = 'amqp://192.168.99.100';
 //form
 app.get('/form', function (req, res) {
   var html='';
+  html += '<button type="button" class="btn btn-primary">Primary</button>';
+  html += "<script language='javascript' src='js/bootstrap.min.js'></script>"
+  html += "<link rel='stylesheet' href='/css/bootstrap.min.css'/>";
   html +="<body>";
   html += "<form action='/api/v1/processData'  method='post' name='form1'>";
   html += "Nome:<input type= 'text' name='nome'></p>";

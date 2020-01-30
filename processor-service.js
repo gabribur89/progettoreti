@@ -62,6 +62,7 @@ function inserisci_db(data){
 function seleziona_dati(data){
 	const sql = 'SELECT * FROM utente WHERE id=$1';
 	const values = [data.id];
+	//console.log(data.id); mostra l'ultimo id inserito da form
 	client.query(sql, values, (err, res) => {
 	  if (err) {
 		console.log(err.stack)
