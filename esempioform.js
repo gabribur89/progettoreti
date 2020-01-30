@@ -30,30 +30,57 @@ app.get('/form', function (req, res) {
   html += "<body>";
   html += "<div class='container'>";
   html += "<h1>iscrizione abbonato</h1>";
-  html += "<form action='/api/v1/processData'  method='post' name='form1'>";
-  html += "Nome:</p><input type= 'text' name='nome'></p>";
-  html += "Cognome:</p><input type='text' name='cognome'></p>";
-  html += "CF:</p><input type='text' name='cf'></p>";
-  html += "Telefono:</p><input type='text' name='telefono'></p>";
-  html += "Data di Nascita:</p><input type='date' name='datanascita'></p>";
-  html += "Indirizzo:</p><input type='text' name='indirizzo'></p>";
-  html += "Citta':</p><input type='text' name='citta'></p>";
-  html += "CAP:</p><input type='text' name='cap'></p>";
-  html += "Tipologia scelta:</p><select name='tipo'>";
-  html += "<option name='pesi' value='pesi'>Sala Pesi</option>"
-  html += "<option name='cyclette' value='cyclette'>Sala Cyclette</option>"
-  html += "<option name='tapis' value='tapis'>Sala Tapis Roulant</option>"
-  html += "<option name='nuoto' value='nuoto'>Sala Nuoto</option>"
-  html += "</select></p>";
-  html += "Durata abbonamento:</p><select name='abbonamento'>";
-  html += "<option name='1mese' value='1mese'>1 mese</option>"
-  html += "<option name='3mesi' value='3mesi'>3 mesi</option>"
-  html += "<option name='6mesi' value='6mesi'>6 mesi</option>"
-  html += "<option name='12mesi' value='12mesi'>1 anno</option>"
-  html += "</select></p>";
-  html += "<input type='submit' value='Invia!'>";
-  html += "<input type='reset'  value='Reset'>";
-  html += "</form>";
+  html+="<form action='/api/v1/processData' method='post' name='form1' role='form'>";
+  html+="<div class='form-group'>";
+  html+="<label for='nome'>Nome</label>";
+  html+="<input type='text' class='form-control' style='width:300px;' id='nome' name='nome' placeholder='Inserisci il nome'>";
+  html+="</div>";
+  html+="<div class='form-group'>";
+  html+="<label for='cognome'>Cognome</label>";
+  html+="<input type='text' class='form-control' style='width:300px;' id='cognome' name='cognome' placeholder='Inserisci il cognome'>";
+  html+="</div>";
+  html+="<div class='form-group'>";
+  html+="<label for='datanascita'>Data di Nascita</label>";
+  html+="<input type='date' class='form-control' style='width:300px;' id='datanascita' name='datanascita'>";
+  html+="</div>";
+  html+="<div class='form-group'>";
+  html+="<label for='cf'>CF</label>";
+  html+="<input type='text' class='form-control' style='width:300px;' id='datanascita' name='cf' placeholder='Inserisci il codice fiscale'>";
+  html+="</div>";
+  html+="<div class='form-group'>";
+  html+="<label for='telefono'>Telefono</label>";
+  html+="<input type='text' class='form-control' style='width:300px;' id='datanascita' name='telefono' placeholder='Inserisci il numero di telefono'>";
+  html+="</div>";
+  html+="<div class='form-group'>";
+  html+="<label for='indirizzo'>Indirizzo</label>";
+  html+="<input type='text' class='form-control' style='width:300px;' id='indirizzo' name='indirizzo' placeholder='Inserisci il tuo indirizzo'>";
+  html+="</div>";
+  html+="<div class='form-group'>";
+  html+="<label for='citta'>Città</label>";
+  html+="<input type='text' class='form-control' style='width:300px;' id='citta' name='citta' placeholder='Inserisci la tua città'>";
+  html+="</div>";
+  html+="<div class='form-group'>";
+  html+="<label for='cap'>CAP</label>";
+  html+="<input type='text' class='form-control' style='width:300px;' id='cap' name='cap' placeholder='Inserisci il tuo CAP'>";
+  html+="</div>";
+  html+="<label for='nometipo'>Tipologia scelta:</label>";
+  html+="<select class='form-control' name='tipo' style='width:300px;'>";
+  html+="<option value='pesi'>Sala Pesi</option>";
+  html+="<option value='cyclette'>Sala Cyclette</option>";
+  html+="<option value='tapis'>Sala Tapis Roulant</option>";
+  html+="<option value='nuoto'>Sala Nuoto</option>";
+  html+="</select>";
+  html+="<label for='nomeabbonamento'>Durata abbonamento:</label>";
+  html+="<select class='form-control' name='abbonamento' style='width:300px;'>";
+  html+="<option value='1mese'>1 mese</option>";
+  html+="<option value='3mesi'>3 mesi</option>";
+  html+="<option value='6mesi'>6 mesi</option>";
+  html+="<option value='12mesi'>1 anno</option>";
+  html+="</select>";
+  html+="<br>";
+  html+="<button type='submit' class='btn btn-primary' id='registrati'>Invia Dati</button>";
+  html+="<button type='reset' class='btn btn-primary' id='reset'>Reset Dati</button>";
+  html+="</form>";
   html += "</div>";
   html += "</body>";
   res.send(html);
