@@ -18,6 +18,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Middleware
 app.use(bodyParser.json());
 
+//bootstrap
+app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
+
 // simulate request ids
 let lastRequestId = 1;
 
@@ -26,11 +29,40 @@ const messageQueueConnectionString = 'amqp://';
 
 //form
 app.get('/form', function (req, res) {
-  res.sendFile(__dirname + '/html/iscrizione.html');
-});
-
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/html/stato.html');
+  var html='';
+  //html += '<button type="button" class="btn btn-primary">Primary</button>';
+  html += "<script language='javascript' src='js/bootstrap.min.js'></script>"
+  html += "<link rel='stylesheet' href='/css/bootstrap.min.css'/>";
+  html += "<body>";
+  html += "<div class='container'>";
+  html += "<h1>iscrizione abbonato</h1>";
+  html += "<form action='/api/v1/processData'  method='post' name='form1'>";
+  html += "Nome:</p><input type= 'text' name='nome'></p>";
+  html += "Cognome:</p><input type='text' name='cognome'></p>";
+  html += "CF:</p><input type='text' name='cf'></p>";
+  html += "Telefono:</p><input type='text' name='telefono'></p>";
+  html += "Data di Nascita:</p><input type='date' name='datanascita'></p>";
+  html += "Indirizzo:</p><input type='text' name='indirizzo'></p>";
+  html += "Citta':</p><input type='text' name='citta'></p>";
+  html += "CAP:</p><input type='text' name='cap'></p>";
+  html += "Tipologia scelta:</p><select name='tipo'>";
+  html += "<option name='pesi' value='pesi'>Sala Pesi</option>"
+  html += "<option name='cyclette' value='cyclette'>Sala Cyclette</option>"
+  html += "<option name='tapis' value='tapis'>Sala Tapis Roulant</option>"
+  html += "<option name='nuoto' value='nuoto'>Sala Nuoto</option>"
+  html += "</select></p>";
+  html += "Durata abbonamento:</p><select name='abbonamento'>";
+  html += "<option name='1mese' value='1mese'>1 mese</option>"
+  html += "<option name='3mesi' value='3mesi'>3 mesi</option>"
+  html += "<option name='6mesi' value='6mesi'>6 mesi</option>"
+  html += "<option name='12mesi' value='12mesi'>1 anno</option>"
+  html += "</select></p>";
+  html += "<input type='submit' value='Invia!'>";
+  html += "<input type='reset'  value='Reset'>";
+  html += "</form>";
+  html += "</div>";
+  html += "</body>";
+  res.send(html);
 });
 
 //recupero info abbonati
