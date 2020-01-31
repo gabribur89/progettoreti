@@ -22,7 +22,7 @@ app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 let lastRequestId = 1;
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://';
+const messageQueueConnectionString = 'amqp://192.168.99.100/';
 
 //form
 app.get('/form', function (req, res) {
