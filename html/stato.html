@@ -17,6 +17,14 @@
     if(data.type == "INSERT"){
       $("#operazione").append("Inserimento avvenuto con successo");
     }
+	
+	if(data.type == "UPDATE"){
+      $("#operazione").append("Aggiornamento avvenuto con successo");
+    }
+
+	if(data.type == "DELETE"){
+      $("#operazione").append("Cancellazione avvenuta con successo");
+    }
     
     $("#nome").append(data.nome);
     $("#cognome").append(data.cognome);

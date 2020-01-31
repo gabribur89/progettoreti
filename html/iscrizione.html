@@ -1,59 +1,64 @@
-  <script language='javascript' src='js/bootstrap.min.js'></script>
-  <link rel='stylesheet' href='/css/bootstrap.min.css'/>
-  <body>
-  <div class='container'>
-  <h1>iscrizione abbonato</h1>
-  <form action='/api/v1/processData' method='post' name='form1' role='form'>
-  <div class='form-group'>
-  <label for='nome'>Nome</label>
-  <input type='text' class='form-control' style='width:300px;' id='nome' name='nome' placeholder='Inserisci il nome'>
-  </div>
-  <div class='form-group'>
-  <label for='cognome'>Cognome</label>
-  <input type='text' class='form-control' style='width:300px;' id='cognome' name='cognome' placeholder='Inserisci il cognome'>
-  </div>
-  <div class='form-group'>
-  <label for='datanascita'>Data di Nascita</label>
-  <input type='date' class='form-control' style='width:300px;' id='datanascita' name='datanascita'>
-  </div>
-  <div class='form-group'>
-  <label for='cf'>CF</label>
-  <input type='text' class='form-control' style='width:300px;' id='datanascita' name='cf' placeholder='Inserisci il codice fiscale'>
-  </div>
-  <div class='form-group'>
-  <label for='telefono'>Telefono</label>
-  <input type='text' class='form-control' style='width:300px;' id='datanascita' name='telefono' placeholder='Inserisci il numero di telefono'>
-  </div>
-  <div class='form-group'>
-  <label for='indirizzo'>Indirizzo</label>
-  <input type='text' class='form-control' style='width:300px;' id='indirizzo' name='indirizzo' placeholder='Inserisci il tuo indirizzo'>
-  </div>
-  <div class='form-group'>
-  <label for='citta'>Città</label>
-  <input type='text' class='form-control' style='width:300px;' id='citta' name='citta' placeholder='Inserisci la tua città'>
-  </div>
-  <div class='form-group'>
-  <label for='cap'>CAP</label>
-  <input type='text' class='form-control' style='width:300px;' id='cap' name='cap' placeholder='Inserisci il tuo CAP'>
-  </div>
-  <label for='nometipo'>Tipologia scelta:</label>
-  <select class='form-control' name='tipo' style='width:300px;'>
-  <option value='pesi'>Sala Pesi</option>
-  <option value='cyclette'>Sala Cyclette</option>
-  <option value='tapis'>Sala Tapis Roulant</option>
-  <option value='nuoto'>Sala Nuoto</option>
-  </select>
-  <label for='nomeabbonamento'>Durata abbonamento:</label>
-  <select class='form-control' name='abbonamento' style='width:300px;'>
-  <option value='1mese'>1 mese</option>
-  <option value='3mesi'>3 mesi</option>
-  <option value='6mesi'>6 mesi</option>
-  <option value='12mesi'>1 anno</option>
-  </select>
-  <br>
-  <button type='submit' class='btn btn-primary' id='registrati'>Invia Dati</button>
-  <button type='reset' class='btn btn-primary' id='reset'>Reset Dati</button>
-  </form>
-  </div>
-  </body>
-  
+<html lang="en">
+<head>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<body>
+	<div class='container'>
+	<h1>iscrizione abbonato</h1>
+		<form action='/api/v1/processData' method='post' name='form1' role='form'>
+		<div class='form-group'>
+			<label for='nome'>Nome</label>
+			<input type='text' class='form-control' style='width:300px;' id='nome' name='nome' placeholder='Inserisci il nome'>
+		</div>
+		<div class='form-group'>
+			<label for='cognome'>Cognome</label>
+			<input type='text' class='form-control' style='width:300px;' id='cognome' name='cognome' placeholder='Inserisci il cognome'>
+		</div>
+		<div class='form-group'>
+			<label for='datanascita'>Data di Nascita</label>
+			<input type='date' class='form-control' style='width:300px;' id='datanascita' name='datanascita'>
+		</div>
+		<div class='form-group'>
+			<label for='cf'>CF</label>
+			<input type='text' class='form-control' style='width:300px;' id='datanascita' name='cf' placeholder='Inserisci il codice fiscale'>
+		</div>
+		<div class='form-group'>
+			<label for='telefono'>Telefono</label>
+			<input type='text' class='form-control' style='width:300px;' id='datanascita' name='telefono' placeholder='Inserisci il numero di telefono'>
+		</div>
+		<div class='form-group'>
+			<label for='indirizzo'>Indirizzo</label>
+			<input type='text' class='form-control' style='width:300px;' id='indirizzo' name='indirizzo' placeholder='Inserisci il tuo indirizzo'>
+		</div>
+		<div class='form-group'>
+			<label for='citta'>Citta'</label>
+			<input type='text' class='form-control' style='width:300px;' id='citta' name='citta' placeholder='Inserisci la tua citta'>
+		</div>
+		<div class='form-group'>
+			<label for='cap'>CAP</label>
+			<input type='text' class='form-control' style='width:300px;' id='cap' name='cap' placeholder='Inserisci il tuo CAP'>
+		</div>
+		<label for='nometipo'>Tipologia scelta:</label>
+			<select class='form-control' name='tipo' style='width:300px;'>
+				<option value='pesi'>Sala Pesi</option>
+				<option value='cyclette'>Sala Cyclette</option>
+				<option value='tapis'>Sala Tapis Roulant</option>
+				<option value='nuoto'>Sala Nuoto</option>
+			</select>
+		<label for='nomeabbonamento'>Durata abbonamento:</label>
+			<select class='form-control' name='abbonamento' style='width:300px;'>
+				<option value='1mese'>1 mese</option>
+				<option value='3mesi'>3 mesi</option>
+				<option value='6mesi'>6 mesi</option>
+				<option value='12mesi'>1 anno</option>
+			</select>
+		<br>
+		<button type='submit' class='btn btn-primary' id='registrati'>Invia Dati</button>
+		<button type='reset' class='btn btn-primary' id='reset'>Reset Dati</button>
+		</form>
+	</div>
+</body>
+</html>

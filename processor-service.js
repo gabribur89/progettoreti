@@ -5,7 +5,7 @@ const client = new Client({
 user: 'postgres',
 host: 'localhost',
 database: 'test',
-password: 'postgres',
+password: 'admin',
 port: 5432,
 })
 
@@ -14,7 +14,7 @@ client.connect()
 const amqp = require('amqplib');
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://';
+const messageQueueConnectionString = 'amqp://192.168.99.100/';
 
 async function listenForMessages() {
   // connect to Rabbit MQ
