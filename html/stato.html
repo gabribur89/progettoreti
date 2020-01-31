@@ -7,6 +7,9 @@
 <div id="operazione"></div>
 <div id="nome"></div>
 <div id="cognome"></div>
+<h1>Stato Richieste</h1>
+<div id="richiesta"></div>
+<div id="risultato"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -14,17 +17,31 @@
   socket.on('vista', function (data) {
     console.log("Arrivato dato: ", data);
 
+    // opzionale se voglio fare altro in base al tipo di operazione 
     if(data.type == "INSERT"){
       $("#operazione").append("Inserimento avvenuto con successo");
     }
+    if(data.type == "UPDATE"){
+      $("#operazione").append("Aggiornamento avvenuto con successo");
+    }
+    if(data.type == "DELETE"){
+      $("#operazione").append("Eliminazione avvenuta con successo");
+    }
     
-    $("#nome").append(data.nome);
-    $("#cognome").append(data.cognome);
+    $("#nome").append('<p>NOME: '+data.nome+'<p>');
+    $("#cognome").append('<p>COGNOME: '+data.cognome+'<p>');
+    $("#operazione").append('<p>OPERAZIONE: '+data.type+'<p>');
 
-    //for (const prop in data){
-    //  console.log(prop, data[prop]);
-    //}
-  });
+});
+
+socket.on('richieste', function (data) {
+  console.log("richiesta processata", data);
+
+  $("#richiesta").html("<p>ID: "+data.requestid+"</p>");
+  $("#risultato").html("<p>RISULTATO: "+data.result+"</p>");
+
+});
+
 </script>
 </body>
 </html>

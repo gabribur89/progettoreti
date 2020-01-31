@@ -134,7 +134,7 @@ function consume({ connection, channel, resultsChannel }) {
 function processMessage(requestData) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(requestData + "-processed")
+      resolve({ id: requestData , status: "COMPLETED"})
     }, 5000);
   });
 }

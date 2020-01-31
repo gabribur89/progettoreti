@@ -1,6 +1,3 @@
-//const path  = require('path');
-//require('dotenv').config({path:  path.resolve(process.cwd(), '../.env')});
-
 const express = require('express');
 // framework backend 
 const app = express();
@@ -32,30 +29,12 @@ app.get('/form', function (req, res) {
   res.sendFile(__dirname + '/html/iscrizione.html');
 });
 
-app.get('/', function (req, res) {
+app.get('/stato', function (req, res) {
   res.sendFile(__dirname + '/html/stato.html');
 });
 
 
-//recupero info abbonati
-// app.get('/getabbonato', async function (req, res) {
-//   var html = '';
-//   html += "<body>";
-//   html += "<h1>Dati degli abbonati</h1>"
-//   html += "<div id='utente'></div>";
-//   html += "</body>";
-  
-//   // connect to Rabbit MQ and create a channel
-//   let connection = await amqp.connect(messageQueueConnectionString);
-//   let channel = await connection.createConfirmChannel();
-  
-//   let op = "SELECT";
-//   await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op } });
-  
-//   res.send(html);
-// });
-
-// handle the request
+// Gestione richiesta form di iscrizione 
 app.post('/api/v1/processData', async function (req, res) {
   // save request id and increment
   let requestId = lastRequestId;
@@ -71,6 +50,7 @@ app.post('/api/v1/processData', async function (req, res) {
   console.log("Published a request message, requestId:", requestId);
   await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op: "INSERT", requestId, requestData } });
 
+  io.emit('richieste', { requestid: requestId, result: "PENDING" });
   // send the request id in the response
   res.send({ requestId })
 });
@@ -108,34 +88,21 @@ function consume({ connection, channel, resultsChannel }) {
     channel.consume("processing.results", async function (msg) {
       // parse message
       let msgBody = msg.content.toString();
-	  //{ table: 'utente', id: 28, type: 'INSERT' }
+	  //{ table: 'utente', id: 28, nome: 'tizio', cognome: 'caio', type: 'INSERT' }
       let data = JSON.parse(msgBody);
 	  if(data.hasOwnProperty('type'))
 	  {
-		  if(data.type == "INSERT")
-		  {
-			//console.log("Inserimento utente avvenuto");
-			//let op = "SELECT";
-      //let id = data.id;
-      io.emit('vista', data );
-			
-		  }
-		  if(data.type == "UPDATE")
-		  {
-			console.log("aggiornamento avvenuto con successo");
-		  }
-		  if(data.type == "DELETE")
-		  {
-			console.log("cancellamento avvenuto con successo");
-		  }
-
+      console.log("emetto segnale di operazione avvenuta ed invio i dati");
+			io.emit('vista', data );
 	  }
 	  else
 	  {
+      // in questo caso ricevo un messaggio che mi dice se la request è stata eseguita
 		  let requestId = data.requestId;
-		  console.log("ELSE:", data);
 		  let processingResults = data.processingResults;
-		  console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
+		  //console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
+			io.emit('richieste', { requestid: processingResults.id, result: processingResults.status });
+
     }
 
     // acknowledge message as received
@@ -155,14 +122,8 @@ function consume({ connection, channel, resultsChannel }) {
   });
 }
 
-// Connect to socket_io channel and emit event 
-//io.on('connection', function (socket) {
-//  socket.emit('vista', { stato: 'connesso' });
-//});
-
-// Start the server
+// Avvia il server
 const PORT = 3000;
-//server = http.createServer(app);
 http.listen(PORT, "localhost", function (err) {
   if (err) {
     console.error(err);
@@ -171,5 +132,5 @@ http.listen(PORT, "localhost", function (err) {
   }
 });
 
-// listen for results on RabbitMQ
+// Mettiti in ascolto su RabbitMQ
 listenForResults();
