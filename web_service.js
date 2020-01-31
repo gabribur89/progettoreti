@@ -2,10 +2,16 @@
 //require('dotenv').config({path:  path.resolve(process.cwd(), '../.env')});
 
 const express = require('express');
+// framework backend 
 const app = express();
-const http = require('http');
+//  http server 
+const http = require('http').Server(app);
 const bodyParser = require('body-parser');
+// queue message protocol 
 const amqp = require('amqplib');
+// real-time communication agent
+var io = require('socket.io')(http);
+  
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -16,56 +22,34 @@ app.use(bodyParser.json());
 let lastRequestId = 1;
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://192.168.99.100';
+const messageQueueConnectionString = 'amqp://';
 
 //form
 app.get('/form', function (req, res) {
-  var html='';
-  html +="<body>";
-  html += "<form action='/api/v1/processData'  method='post' name='form1'>";
-  html += "Nome:<input type= 'text' name='nome'></p>";
-  html += "Cognome:<input type='text' name='cognome'></p>";
-  html += "CF:<input type='text' name='cf'></p>";
-  html += "Telefono:<input type='text' name='telefono'></p>";
-  html += "Data di Nascita:<input type='date' name='datanascita'></p>";
-  html += "Indirizzo:<input type='text' name='indirizzo'></p>";
-  html += "Citta':<input type='text' name='citta'></p>";
-  html += "CAP:<input type='text' name='cap'></p>";
-  html += "Tipologia scelta:<select name='tipo'>";
-  html += "<option name='pesi' value='pesi'>Sala Pesi</option>"
-  html += "<option name='cyclette' value='cyclette'>Sala Cyclette</option>"
-  html += "<option name='tapis' value='tapis'>Sala Tapis Roulant</option>"
-  html += "<option name='nuoto' value='nuoto'>Sala Nuoto</option>"
-  html += "</select></p>";
-  html += "Durata abbonamento:<select name='abbonamento'>";
-  html += "<option name='1mese' value='1mese'>1 mese</option>"
-  html += "<option name='3mesi' value='3mesi'>3 mesi</option>"
-  html += "<option name='6mesi' value='6mesi'>6 mesi</option>"
-  html += "<option name='12mesi' value='12mesi'>1 anno</option>"
-  html += "</select></p>";
-  html += "<input type='submit' value='Invia!'>";
-  html += "<input type='reset'  value='Reset'>";
-  html += "</form>";
-  html += "</body>";
-  res.send(html);
+  res.sendFile(__dirname + '/html/iscrizione.html');
+});
+
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/html/stato.html');
 });
 
 //recupero info abbonati
-app.get('/getabbonato', async function (req, res) {
-  var html = '';
-  html += "<body>";
-  html += "<h1>Dati degli abbonati</h1>";
-  html += "</body>";
+// app.get('/getabbonato', async function (req, res) {
+//   var html = '';
+//   html += "<body>";
+//   html += "<h1>Dati degli abbonati</h1>"
+//   html += "<div id='utente'></div>";
+//   html += "</body>";
   
-  // connect to Rabbit MQ and create a channel
-  let connection = await amqp.connect(messageQueueConnectionString);
-  let channel = await connection.createConfirmChannel();
+//   // connect to Rabbit MQ and create a channel
+//   let connection = await amqp.connect(messageQueueConnectionString);
+//   let channel = await connection.createConfirmChannel();
   
-  let op = "SELECT";
-  await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op } });
+//   let op = "SELECT";
+//   await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op } });
   
-  res.send(html);
-});
+//   res.send(html);
+// });
 
 // handle the request
 app.post('/api/v1/processData', async function (req, res) {
@@ -126,10 +110,10 @@ function consume({ connection, channel, resultsChannel }) {
 	  {
 		  if(data.type == "INSERT")
 		  {
-			console.log("Inserimento utente avvenuto");
-			let op = "SELECT";
-			let id = data.id;
-			await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op, id }});
+			//console.log("Inserimento utente avvenuto");
+			//let op = "SELECT";
+      //let id = data.id;
+      io.emit('vista', data );
 			
 		  }
 		  if(data.type == "UPDATE")
@@ -145,13 +129,13 @@ function consume({ connection, channel, resultsChannel }) {
 	  else
 	  {
 		  let requestId = data.requestId;
-		  console.log(data);
+		  console.log("ELSE:", data);
 		  let processingResults = data.processingResults;
 		  console.log("Received a result message, requestId:", requestId, "processingResults:", processingResults);
+    }
 
-		  // acknowledge message as received
-		  await channel.ack(msg);
-	  }
+    // acknowledge message as received
+    await channel.ack(msg);
 	  
     });
 
@@ -167,10 +151,15 @@ function consume({ connection, channel, resultsChannel }) {
   });
 }
 
+// Connect to socket_io channel and emit event 
+//io.on('connection', function (socket) {
+//  socket.emit('vista', { stato: 'connesso' });
+//});
+
 // Start the server
 const PORT = 3000;
-server = http.createServer(app);
-server.listen(PORT, "localhost", function (err) {
+//server = http.createServer(app);
+http.listen(PORT, "localhost", function (err) {
   if (err) {
     console.error(err);
   } else {

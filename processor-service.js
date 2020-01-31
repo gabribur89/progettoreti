@@ -5,7 +5,7 @@ const client = new Client({
 user: 'postgres',
 host: 'localhost',
 database: 'test',
-password: 'admin',
+password: 'postgres',
 port: 5432,
 })
 
@@ -14,7 +14,7 @@ client.connect()
 const amqp = require('amqplib');
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://192.168.99.100';
+const messageQueueConnectionString = 'amqp://';
 
 async function listenForMessages() {
   // connect to Rabbit MQ
@@ -86,7 +86,7 @@ function consume({ connection, channel, resultsChannel }) {
 		  if(data.op == "SELECT")
 		  {
 			console.log("ciaone");
-		    await channel.ack(msg);
+		    //await channel.ack(msg);
 			//console.log(data);
 			//query db per selezione
 			seleziona_dati(data);
@@ -97,12 +97,10 @@ function consume({ connection, channel, resultsChannel }) {
 			  let requestData = data.requestData;
 			  
 			  //faccio query db per inserimento
-			  inserisci_db(requestData);
-			  //console.log(requestData);
-			  console.log("Received a request message, requestId:", requestId);
+			  await inserisci_db(requestData);
 
 			  // process data
-			  let processingResults = await processMessage(requestData);
+			  let processingResults = await processMessage(requestId);
 
 			  // publish results to channel
 			  await publishToChannel(resultsChannel, {
@@ -111,11 +109,12 @@ function consume({ connection, channel, resultsChannel }) {
 				data: { requestId, processingResults }
 			  });
 			  console.log("Published results for requestId:", requestId);
-
-			  // acknowledge message as processed successfully
-			  await channel.ack(msg);
 		  }
 	  }
+
+	  console.log("ACK Message")
+	  await channel.ack(msg);
+
     });
 
     // handle connection closed
