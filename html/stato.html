@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+<h1>Stato Abbonamenti</h1>
+<div id="operazione"></div>
+<div id="nome"></div>
+<div id="cognome"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io('http://localhost:3000');
+  socket.on('vista', function (data) {
+    console.log("Arrivato dato: ", data);
+
+    if(data.type == "INSERT"){
+      $("#operazione").append("Inserimento avvenuto con successo");
+    }
+    
+    $("#nome").append(data.nome);
+    $("#cognome").append(data.cognome);
+
+    //for (const prop in data){
+    //  console.log(prop, data[prop]);
+    //}
+  });
+</script>
+</body>
+</html>
