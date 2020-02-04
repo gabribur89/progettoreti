@@ -2,14 +2,37 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <body>
 <h1>Stato Abbonamenti</h1>
 <div id="operazione"></div>
-<div id="nome"></div>
-<div id="cognome"></div>
+<!--<div id="nome"></div>
+<div id="cognome"></div>-->
 <h1>Stato Richieste</h1>
+<div id="data"></div>
 <div id="richiesta"></div>
 <div id="risultato"></div>
+<br>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nome</th>
+      <th scope="col">Cognome</th>
+      <th scope="col">Data di Iscrizione</th>
+	  <th scope="col">Stato</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row" id="idop"></th>
+      <td id="nome"></td>
+      <td id="cognome"></td>
+      <td id="dataiscrizione"></td>
+      <td id="stato"></td>
+    </tr>
+  </tbody>
+</table>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -20,6 +43,7 @@
     // opzionale se voglio fare altro in base al tipo di operazione 
     if(data.type == "INSERT"){
       $("#operazione").append("Inserimento avvenuto con successo");
+	  $("#stato").append('<p>INSERITO</p>');
     }
     if(data.type == "UPDATE"){
       $("#operazione").append("Aggiornamento avvenuto con successo");
@@ -27,16 +51,20 @@
     if(data.type == "DELETE"){
       $("#operazione").append("Eliminazione avvenuta con successo");
     }
-    
-    $("#nome").append('<p>NOME: '+data.nome+'<p>');
-    $("#cognome").append('<p>COGNOME: '+data.cognome+'<p>');
+	
+	$("#idop").append("<p>"+data.id+"</p>");
+    $("#nome").append('<p>'+data.nome+'<p>');
+    $("#cognome").append('<p>'+data.cognome+'<p>');
+	$("#dataiscrizione").append('<p>'+data.dataiscrizione+'<p>');
+	
     $("#operazione").append('<p>OPERAZIONE: '+data.type+'<p>');
 
 });
 
 socket.on('richieste', function (data) {
   console.log("richiesta processata", data);
-
+  console.log("data",data.dataiscrizione);
+  $("#data").html("<p>DATAISCRIZIONE: "+data.dataiscrizione+"</p>");
   $("#richiesta").html("<p>ID: "+data.requestid+"</p>");
   $("#risultato").html("<p>RISULTATO: "+data.result+"</p>");
 
