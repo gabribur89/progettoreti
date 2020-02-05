@@ -8,4 +8,12 @@ psql -d miodb < tabella_utente.sql
 # opzionale se si vuole fare l'update dei trigger:
 psql -d miodb < triggers_update.sql 
 
- 
+# per vedere la definizione di una funzione
+psql -d test 
+#test> \df+ nomedellafunzione
+
+# aggiungi una colonna 
+ALTER TABLE utente ADD COLUMN nomecolonna tipo; 
+
+# rimuovi colonna
+ALTER TABLE utente DROP COLUMN nomecolonna; 
