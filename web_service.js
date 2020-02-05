@@ -55,6 +55,12 @@ app.post('/api/v1/processData', async function (req, res) {
   res.send({ requestId })
 });
 
+app.get('/cancella', function(req,res){
+	//recupero l'id pubblicandolo su rabbit
+	//let idabbonato = req.data.id;
+	console.log(req);
+}
+
 // utility function to publish messages to a channel
 function publishToChannel(channel, { routingKey, exchangeName, data }) {
   return new Promise((resolve, reject) => {

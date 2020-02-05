@@ -58,13 +58,16 @@
     // opzionale se voglio fare altro in base al tipo di operazione 
     if(data.type == "INSERT"){
       //$("#operazione").append("Inserimento avvenuto con successo");
-	  $("#stato").append('<p>INSERITO</p>');
+	  $("#stato").append('<p>INSERITO <button type="submit" class="btn btn-danger" id="elimina">Elimina</button></p>');
     }
     if(data.type == "UPDATE"){
      //$("#operazione").append("Aggiornamento avvenuto con successo");
     }
     if(data.type == "DELETE"){
      //$("#operazione").append("Eliminazione avvenuta con successo");
+	 $("#elimina").click(function(){
+		var id = $(this).attr('data.id');
+	 });
     }
 	
 	$("#idop").append("<p>"+data.id+"</p>");

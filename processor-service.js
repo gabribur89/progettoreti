@@ -72,6 +72,19 @@ function seleziona_dati(data){
 	})
 }
 
+function elimina_dati(data){
+	const sql = 'DELETE FROM utente WHERE id=$1';
+	const values = [data.id];
+	//console.log(data.id); mostra l'ultimo id inserito da form
+	client.query(sql, values, (err, res) => {
+	  if (err) {
+		console.log(err.stack)
+	  } else {
+		console.log(res.rows)
+	 }
+	})
+}
+
 // consume messages from RabbitMQ
 function consume({ connection, channel, resultsChannel }) {
   return new Promise((resolve, reject) => {
@@ -91,6 +104,14 @@ function consume({ connection, channel, resultsChannel }) {
 			//console.log(data);
 			//query db per selezione
 			seleziona_dati(data);
+		  }
+		  if(data.op == "DELETE")
+		  {
+			console.log("ciaone");
+		    //await channel.ack(msg);
+			//console.log(data);
+			//query db per selezione
+			elimina_dati(data);
 		  }
 		  if(data.op == "INSERT")
 		  {
