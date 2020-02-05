@@ -88,10 +88,12 @@ function consume({ connection, channel, resultsChannel }) {
     channel.consume("processing.results", async function (msg) {
       // parse message
       let msgBody = msg.content.toString();
+	  console.log("prima dell IF",msgBody);
 	  //{ table: 'utente', id: 28, nome: 'tizio', cognome: 'caio', type: 'INSERT' }
       let data = JSON.parse(msgBody);
 	  if(data.hasOwnProperty('type'))
 	  {
+	  console.log("siamo dentro IF",data);
       console.log("emetto segnale di operazione avvenuta ed invio i dati");
 			io.emit('vista', data );
 	  }
