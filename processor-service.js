@@ -1,20 +1,21 @@
-//configuro postgres
+//configure the DB
 const { Client, Pool} = require('pg')
 
 const client = new Client({
 user: 'postgres',
 host: 'localhost',
 database: 'test',
-password: 'admin',
+password: 'postgres',
 port: 5432,
 })
 
-client.connect()
-
 const amqp = require('amqplib');
 
+// connect to the DB
+client.connect()
+
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://192.168.99.100/';
+const messageQueueConnectionString = 'amqp://';
 
 async function listenForMessages() {
   // connect to Rabbit MQ
@@ -44,28 +45,30 @@ function publishToChannel(channel, { routingKey, exchangeName, data }) {
   });
 }
 
-
-function inserisci_db(data){
+// this is where a message data is insertend into the DB
+function insert_user(data){
 	console.log(data)
 	const sql = 'INSERT INTO utente(nome, cognome, cf, telefono, datanascita, indirizzo, citta, cap, tipo, durata, dataiscrizione) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *'
 	const values = [data.nome,data.cognome,data.cf,data.telefono,data.datanascita,data.indirizzo,data.citta,data.cap,data.tipo,data.abbonamento,data.dataiscrizione]
 		client.query(sql, values, (err, res) => {
 		  if (err) {
-			console.log("MIO ERRORE")
-			console.log(err.stack)
+			//console.log("query error")
+			console.log(err.stack);
+			//throw new Error('Database insert operation error!');
 		  } else {
-			console.log(res.rows[0])
+			console.log(res.rows[0]);
    		 }
 		})
 }
 
-function seleziona_dati(data){
+function select_user_data(data){
 	const sql = 'SELECT * FROM utente WHERE id=$1';
 	const values = [data.id];
 	//console.log(data.id); mostra l'ultimo id inserito da form
 	client.query(sql, values, (err, res) => {
 	  if (err) {
 		console.log(err.stack)
+		throw new Error('Database operation error!');
 	  } else {
 		console.log(res.rows)
 	 }
@@ -81,27 +84,20 @@ function consume({ connection, channel, resultsChannel }) {
       let data = JSON.parse(msgBody);
 	  //console.log(data);
 	  
-	  //se c'è un campo op, non eseguo inserisci_db, altrimenti eseguo un'altra funzione (es. select di tutti i dati)
+	  //check if 'op' propoerty is present 
 	  if(data.hasOwnProperty('op'))
 	  {
 		  if(data.op == "SELECT")
 		  {
-			console.log("ciaone");
-		    //await channel.ack(msg);
-			//console.log(data);
-			//query db per selezione
-			seleziona_dati(data);
+			select_user_data(data);
 		  }
 		  if(data.op == "INSERT")
 		  {
 			  let requestId = data.requestId;
 			  let requestData = data.requestData;
-			  
-			  //faccio query db per inserimento
-			  await inserisci_db(requestData);
 
 			  // process data
-			  let processingResults = await processMessage(requestId);
+			  let processingResults = await processMessage(requestId, requestData);
 
 			  // publish results to channel
 			  await publishToChannel(resultsChannel, {
@@ -113,6 +109,7 @@ function consume({ connection, channel, resultsChannel }) {
 		  }
 	  }
 
+	  // confirm message was processed 
 	  console.log("ACK Message")
 	  await channel.ack(msg);
 
@@ -130,12 +127,14 @@ function consume({ connection, channel, resultsChannel }) {
   });
 }
 
-// simulate data processing that takes 5 seconds
-function processMessage(requestData) {
+// wait 2 secs otherwise user insertion is too fast 
+function processMessage(req_id , userData) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve({ id: requestData , status: "COMPLETED"})
-    }, 5000);
+	  // insert user data into the DB
+ 	  insert_user(userData);
+      resolve({ id: req_id , status: "COMPLETED"})
+    }, 2000);
   });
 }
 

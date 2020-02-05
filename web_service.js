@@ -1,3 +1,6 @@
+//const queue_ip = process.env.QUEUE_IP;
+//console.log(`Your port is ${queue_ip}`);
+
 const express = require('express');
 // framework backend 
 const app = express();
@@ -22,7 +25,7 @@ app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 let lastRequestId = 1;
 
 // RabbitMQ connection string
-const messageQueueConnectionString = 'amqp://192.168.99.100/';
+const messageQueueConnectionString = 'amqp://';
 
 //form
 app.get('/form', function (req, res) {
@@ -34,7 +37,7 @@ app.get('/stato', function (req, res) {
 });
 
 
-// Gestione richiesta form di iscrizione 
+// form data endpoint, gets a POST form and sent to RabbitMQ  
 app.post('/api/v1/processData', async function (req, res) {
   // save request id and increment
   let requestId = lastRequestId;
@@ -88,12 +91,11 @@ function consume({ connection, channel, resultsChannel }) {
     channel.consume("processing.results", async function (msg) {
       // parse message
       let msgBody = msg.content.toString();
-	  console.log("prima dell IF",msgBody);
-	  //{ table: 'utente', id: 28, nome: 'tizio', cognome: 'caio', type: 'INSERT' }
+    //{ table: 'utente', id: 28, nome: 'tizio', cognome: 'caio', type: 'INSERT' }
+      console.log(msgBody);
       let data = JSON.parse(msgBody);
 	  if(data.hasOwnProperty('type'))
 	  {
-	  console.log("siamo dentro IF",data);
       console.log("emetto segnale di operazione avvenuta ed invio i dati");
 			io.emit('vista', data );
 	  }
@@ -124,7 +126,7 @@ function consume({ connection, channel, resultsChannel }) {
   });
 }
 
-// Avvia il server
+// Start Http Server 
 const PORT = 3000;
 http.listen(PORT, "localhost", function (err) {
   if (err) {
@@ -134,5 +136,5 @@ http.listen(PORT, "localhost", function (err) {
   }
 });
 
-// Mettiti in ascolto su RabbitMQ
+// listen for messages coming from our queue
 listenForResults();
