@@ -58,17 +58,30 @@
     // opzionale se voglio fare altro in base al tipo di operazione 
     if(data.type == "INSERT"){
       //$("#operazione").append("Inserimento avvenuto con successo");
-	  $("#stato").append('<p>INSERITO <button type="submit" class="btn btn-danger" id="elimina">Elimina</button></p>');
+	  $("#stato").append('<p>INSERITO <button type="submit" class="btn btn-danger" id="'+data.id+'">Elimina</button></p>');
     }
     if(data.type == "UPDATE"){
      //$("#operazione").append("Aggiornamento avvenuto con successo");
     }
     if(data.type == "DELETE"){
      //$("#operazione").append("Eliminazione avvenuta con successo");
-	 $("#elimina").click(function(){
-		var id = $(this).attr('data.id');
-	 });
+	 
     }
+	
+	$(".btn").click(function(){
+		//console.log("aaa");
+		var id = $(this).attr('id');
+		//console.log(id);
+		
+		$.ajax({
+			url: '/cancella/'+id+'/',
+			type: 'PUT',
+			success: function(response){
+				console.log(response);
+			}
+		});
+			
+	});
 	
 	$("#idop").append("<p>"+data.id+"</p>");
     $("#nome").append('<p>'+data.nome+'<p>');
@@ -81,7 +94,11 @@
 
 socket.on('richieste', function (data) {
   console.log("richiesta processata", data);
-  console.log("data",data.dataiscrizione);
+  /*if (data.hasOwnProperty('op') && data.op == 'DELETE')
+  {
+	console.log("elimino la linea di id", data.id);
+  }*/
+  //console.log("data",data.dataiscrizione);
   $("#richiesta").html("<p>"+data.requestid+"</p>");
   $("#risultato").html("<p>"+data.result+"</p>");
 

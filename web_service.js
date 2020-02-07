@@ -55,11 +55,29 @@ app.post('/api/v1/processData', async function (req, res) {
   res.send({ requestId })
 });
 
-app.get('/cancella', function(req,res){
+//creo endpoint per put
+app.put('/cancella/:id', async function(req,res){
+	
+	// save request id and increment
+    let requestId = lastRequestId;
+    lastRequestId++;
 	//recupero l'id pubblicandolo su rabbit
 	//let idabbonato = req.data.id;
-	console.log(req);
-}
+	//console.log("richiesta",req.params.id);
+	
+	// connect to Rabbit MQ and create a channel
+	let connection = await amqp.connect(messageQueueConnectionString);
+	let channel = await connection.createConfirmChannel();
+	
+	// publish the data to Rabbit MQ
+	let userid = req.params.id;
+	//console.log(requestData);
+	await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op: "DELETE", requestId, userid} });
+	
+	io.emit('richieste', { requestid: requestId, result: "PENDING" });
+	
+	return res.send("ok");
+});
 
 // utility function to publish messages to a channel
 function publishToChannel(channel, { routingKey, exchangeName, data }) {

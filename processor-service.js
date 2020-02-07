@@ -73,8 +73,9 @@ function seleziona_dati(data){
 }
 
 function elimina_dati(data){
+	console.log("data",data);
 	const sql = 'DELETE FROM utente WHERE id=$1';
-	const values = [data.id];
+	const values = [data.userid];
 	//console.log(data.id); mostra l'ultimo id inserito da form
 	client.query(sql, values, (err, res) => {
 	  if (err) {
@@ -107,11 +108,27 @@ function consume({ connection, channel, resultsChannel }) {
 		  }
 		  if(data.op == "DELETE")
 		  {
-			console.log("ciaone");
+			console.log("id da eliminare",data);
+			
+			let requestId = data.requestId;
 		    //await channel.ack(msg);
-			//console.log(data);
+			//console.log("data",data);
+			
 			//query db per selezione
 			elimina_dati(data);
+			
+			// process data
+			let processingResults = await processMessage(requestId);
+
+			// publish results to channel
+			await publishToChannel(resultsChannel, {
+				exchangeName: "processing",
+				routingKey: "result",
+				data: { requestId, processingResults }
+			});
+			
+			console.log("Published results for requestId:", requestId);
+			
 		  }
 		  if(data.op == "INSERT")
 		  {
