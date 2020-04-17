@@ -168,7 +168,7 @@ function consume({ connection, channel, resultsChannel }) {
   });
 }
 
-// simulate data processing that takes 5 seconds
+// aggiorna lo stato da pending a completed
 function processMessage(requestData) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {

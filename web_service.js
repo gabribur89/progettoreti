@@ -24,17 +24,17 @@ let lastRequestId = 1;
 // RabbitMQ connection string
 const messageQueueConnectionString = 'amqp://192.168.99.100/';
 
-//form
+//endpoint che serve il form di iscrizione
 app.get('/form', function (req, res) {
   res.sendFile(__dirname + '/html/iscrizione.html');
 });
-
+//endpoint che serve la pagina di stato
 app.get('/stato', function (req, res) {
   res.sendFile(__dirname + '/html/stato.html');
 });
 
 
-// Gestione richiesta form di iscrizione 
+// Gestione richiesta form di iscrizione, riceve dei dati ed esegue un'azione
 app.post('/api/v1/processData', async function (req, res) {
   // save request id and increment
   let requestId = lastRequestId;
@@ -51,11 +51,11 @@ app.post('/api/v1/processData', async function (req, res) {
   await publishToChannel(channel, { routingKey: "request", exchangeName: "processing", data: { op: "INSERT", requestId, requestData } });
 
   io.emit('richieste', { requestid: requestId, result: "PENDING" });
-  // send the request id in the response
+  // send the request id in the response, rispondo alla richiesta HTTP con l'id generato
   res.send({ requestId })
 });
 
-//creo endpoint per put
+//creo endpoint per put, prendo l'id utente da cancellare dal db, accetta http put
 app.put('/cancella/:id', async function(req,res){
 	
 	// save request id and increment
@@ -80,8 +80,13 @@ app.put('/cancella/:id', async function(req,res){
 });
 
 // utility function to publish messages to a channel
+/*input: 1) canale creato in precedenza in rabbit;
+		 2) routingKey, per scegliere la coda;
+		 3) exchangeName, tipo di exchange configurato in Rabbit
+		 4) data, dati del messaggio*/
 function publishToChannel(channel, { routingKey, exchangeName, data }) {
   return new Promise((resolve, reject) => {
+	  //questa è la funzione che pubblica il messaggio nella coda di rabbit
     channel.publish(exchangeName, routingKey, Buffer.from(JSON.stringify(data), 'utf-8'), { persistent: true }, function (err, ok) {
       if (err) {
         return reject(err);
@@ -92,7 +97,8 @@ function publishToChannel(channel, { routingKey, exchangeName, data }) {
   });
 }
 
-
+//si mette in ascolto sulla coda in modalità asincrona
+//dei messaggi che possono essere messi nella coda
 async function listenForResults() {
   // connect to Rabbit MQ
   let connection = await amqp.connect(messageQueueConnectionString);
@@ -109,6 +115,8 @@ async function listenForResults() {
 // consume messages from RabbitMQ
 function consume({ connection, channel, resultsChannel }) {
   return new Promise((resolve, reject) => {
+	//utilizzando l'exchange e la routingKey è pronto a consumare messaggi dalla coda
+	//viene letto il dato contenuto nel messaggio ed inviato tramite metodo emit di io alla pagina stato.html
     channel.consume("processing.results", async function (msg) {
       // parse message
       let msgBody = msg.content.toString();
@@ -119,7 +127,7 @@ function consume({ connection, channel, resultsChannel }) {
 	  {
 	  console.log("siamo dentro IF",data);
       console.log("emetto segnale di operazione avvenuta ed invio i dati");
-			io.emit('vista', data );
+	   io.emit('vista', data );
 	  }
 	  else
 	  {
@@ -131,7 +139,7 @@ function consume({ connection, channel, resultsChannel }) {
 
     }
 
-    // acknowledge message as received
+    // acknowledge message as received, si comunica a rabbit che è stato ricevuto
     await channel.ack(msg);
 	  
     });
